@@ -13,21 +13,37 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Créer quelques technologies
-        $techs = Technology::factory(5)->create();
+        /**
+         * TECHNOLOGIES
+         * On génère plusieurs technologies avec un "order" unique et croissant.
+         */
+        $techs = Technology::factory()
+            ->count(12)
+            ->sequence(fn ($sequence) => [
+                'order' => $sequence->index + 1
+            ])
+            ->create();
 
-        // Créer des projets et les relier aux technologies
-        Project::factory(10)->create()->each(function($project) use ($techs) {
+        /**
+         * PROJECTS
+         * On génère 10 projets et on leur assigne entre 2 et 5 technologies.
+         */
+        Project::factory(10)->create()->each(function ($project) use ($techs) {
             $project->technologies()->attach(
-                $techs->random(rand(1,3))->pluck('id')->toArray()
+                $techs->random(rand(2, 5))->pluck('id')->toArray()
             );
         });
 
-        // Créer expériences et formations
+        /**
+         * EXPERIENCES & FORMATIONS
+         */
         Experience::factory(5)->create();
         Formation::factory(5)->create();
 
-        // Créer les infos personnelles
-        PersonalInfo::factory(1)->create();
+        /**
+         * PERSONAL INFO
+         * Une seule entrée.
+         */
+        PersonalInfo::factory()->create();
     }
 }

@@ -2,14 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Formation extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'degree','school','location','start_date','end_date','description'
+        'degree',
+        'school',
+        'location',
+        'start_date',
+        'end_date',
+        'description',
+    ];
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 }

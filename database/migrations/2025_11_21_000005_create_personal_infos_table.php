@@ -4,25 +4,29 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-    public function up(): void {
-        Schema::create('personal_infos', function (Blueprint $table) {
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('personal_info', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('title');
+            $table->string('full_name');
+            $table->string('job_title')->nullable();
             $table->text('bio')->nullable();
-            $table->string('photo')->nullable();
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('location')->nullable();
-            $table->boolean('available')->default(true);
-            $table->string('cv')->nullable();
-            $table->json('socials')->nullable(); // {linkedin: '', github: '', twitter: ''}
+            $table->string('photo')->nullable(); // Avatar / photo
+            $table->string('website')->nullable();
+            $table->string('github')->nullable();
+            $table->string('linkedin')->nullable();
+            $table->string('x')->nullable(); // ancien twitter
             $table->timestamps();
         });
     }
 
-    public function down(): void {
-        Schema::dropIfExists('personal_infos');
+    public function down()
+    {
+        Schema::dropIfExists('personal_info');
     }
 };
