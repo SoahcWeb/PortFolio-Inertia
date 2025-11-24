@@ -3,26 +3,48 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Application Web (Front + Backoffice)
-|
-*/
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TechnologyController;
+use App\Http\Controllers\ExperienceController;
+use App\Http\Controllers\FormationController;
+use App\Http\Controllers\PersonalInfoController;
 
-// 🔹 Page d'accueil (Index.vue)
 Route::get('/', function () {
-    return Inertia::render('Index'); // Correspond à resources/js/Pages/Index.vue
-})->name('home'); // Le nom 'home' sert juste pour référencer la route dans Laravel
-
-// 🔹 Dashboard protégé
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard'); // Correspond à resources/js/Pages/Dashboard.vue
-    })->name('dashboard');
+    return Inertia::render('Welcome');
 });
 
-// 🔹 Auth routes (login, register, etc.)
-require __DIR__.'/auth.php';
+// Auth + Verified
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+
+    /**
+     * -----------------------------------------
+     * BACKOFFICE ROUTES
+     * -----------------------------------------
+     */
+    Route::prefix('admin')->name('admin.')->group(function () {
+
+        // 🌐 Technologies (CRUD complet)
+        Route::resource('technologies', TechnologyController::class);
+
+        // 🧱 Projects (CRUD + images)
+        Route::resource('projects', ProjectController::class);
+
+        // 🕓 Experiences
+        Route::resource('experiences', ExperienceController::class);
+
+        // 🎓 Formations
+        Route::resource('formations', FormationController::class);
+
+        // 👤 PersonalInfo — Singleton (SHOW + EDIT + UPDATE)
+        Route::get('personal-info', [PersonalInfoController::class, 'edit'])
+            ->name('personal-info.edit');
+
+        Route::put('personal-info', [PersonalInfoController::class, 'update'])
+            ->name('personal-info.update');
+    });
+
+});

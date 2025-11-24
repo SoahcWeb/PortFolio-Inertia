@@ -2,41 +2,35 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Technology extends Model
 {
     use HasFactory;
 
-    /**
-     * Colonnes mass assignables
-     */
     protected $fillable = [
         'name',
         'category',
         'level',
-        'logo',
         'color',
         'order',
+        'logo',
     ];
 
-    /**
-     * Relation Many-to-Many avec les projets
-     */
+    protected $casts = [
+        'order' => 'integer',
+    ];
+
+    // Relation many-to-many avec Project
     public function projects()
     {
-        return $this->belongsToMany(Project::class);
+        return $this->belongsToMany(Project::class)->withTimestamps();
     }
 
-    /**
-     * Accessor : retourne l'URL complète du logo
-     */
-    public function getLogoPathAttribute()
+    // Accessor : URL complète du logo
+    public function getLogoUrlAttribute()
     {
-        return $this->logo
-            ? Storage::url($this->logo)
-            : null;
+        return $this->logo ? asset('storage/'.$this->logo) : null;
     }
 }
