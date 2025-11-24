@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+    <!-- Tailwind CSS / Vite -->
+    @vite('resources/css/app.css')
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <!-- Inertia Head -->
+    @inertiaHead
+</head>
+<body class="font-sans antialiased text-gray-900 bg-gray-100 dark:bg-gray-900 dark:text-gray-100">
 
-        <!-- Scripts -->
-        @routes
-        @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
-        @inertiaHead
-    </head>
-    <body class="font-sans antialiased">
-        @inertia
-    </body>
+    <!-- Inertia root -->
+    @inertia
+
+    <!-- Scripts JS -->
+    @vite('resources/js/app.js')
+</body>
 </html>
+
+<script>
+console.log('Laravel + Inertia + Vue fonctionne !');
+</script>
+
