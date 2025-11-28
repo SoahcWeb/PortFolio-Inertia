@@ -6,6 +6,10 @@ defineProps({
     canRegister: Boolean,
     laravelVersion: { type: String, required: true },
     phpVersion: { type: String, required: true },
+    // On peut ajouter des URLs depuis Laravel si besoin
+    loginUrl: { type: String, default: '/login' },
+    registerUrl: { type: String, default: '/register' },
+    dashboardUrl: { type: String, default: '/dashboard' },
 });
 </script>
 
@@ -13,10 +17,11 @@ defineProps({
     <Head title="Welcome" />
 
     <div class="relative min-h-screen bg-gray-100 bg-center sm:flex sm:justify-center sm:items-center bg-dots-darker dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
+        <!-- Auth Links -->
         <div v-if="canLogin" class="p-6 sm:fixed sm:top-0 sm:right-0 text-end">
             <Link
                 v-if="$page.props.auth.user"
-                :href="route('dashboard')"
+                :href="dashboardUrl"
                 class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
             >
                 Dashboard
@@ -24,7 +29,7 @@ defineProps({
 
             <template v-else>
                 <Link
-                    :href="route('login')"
+                    :href="loginUrl"
                     class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                 >
                     Log in
@@ -32,7 +37,7 @@ defineProps({
 
                 <Link
                     v-if="canRegister"
-                    :href="route('register')"
+                    :href="registerUrl"
                     class="font-semibold text-gray-600 ms-4 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                 >
                     Register
@@ -40,14 +45,17 @@ defineProps({
             </template>
         </div>
 
+        <!-- Main Content -->
         <div class="p-6 mx-auto max-w-7xl lg:p-8">
             <div class="flex justify-center">
-                <h1 class="text-4xl font-bold text-gray-800 dark:text-white">Bienvenue sur votre projet Laravel + Inertia + Vue 🎉</h1>
+                <h1 class="text-4xl font-bold text-gray-800 dark:text-white">
+                    Bienvenue sur votre projet Laravel + Inertia + Vue 🎉
+                </h1>
             </div>
 
             <div class="flex justify-center mt-10">
                 <Link
-                    :href="route('home')"
+                    href="/"
                     class="px-6 py-3 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700"
                 >
                     Aller à Home
