@@ -1,28 +1,43 @@
 <script setup>
-import { Link, Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
+
 const props = defineProps({
-  title: String
+  title: { type: String, default: 'Laravel' },
+  auth: { type: Object, default: () => ({ user: null }) },
+  errors: { type: Object, default: () => ({}) },
+  flash: { type: Object, default: () => ({}) }, // messages flash
 });
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen">
-    <!-- Header -->
-    <header class="flex items-center justify-between p-4 text-white bg-gray-800">
-      <h1 class="text-lg font-bold">{{ title || 'Backoffice' }}</h1>
-      <nav class="space-x-4">
-        <Link href="/dashboard" class="hover:underline">Dashboard</Link>
-        <Link href="/technologies" class="hover:underline">Technologies</Link>
-        <Link href="/projects" class="hover:underline">Projets</Link>
-        <Link href="/experiences" class="hover:underline">Expériences</Link>
-        <Link href="/formations" class="hover:underline">Formations</Link>
-        <Link href="/personal-info" class="hover:underline">Infos Perso</Link>
-      </nav>
+  <div class="min-h-screen bg-gray-100">
+
+    <!-- Titre de la page -->
+    <Head :title="title" />
+
+    <!-- Navbar simple -->
+    <nav class="flex justify-between p-4 bg-white shadow">
+      <div class="text-lg font-bold">Mon App</div>
+      <div>
+        <span v-if="auth?.user" class="mr-4">Bonjour, {{ auth.user.name }}</span>
+        <Link href="/logout" method="post" class="text-red-600 hover:underline">Se déconnecter</Link>
+      </div>
+    </nav>
+
+    <!-- Header optionnel -->
+    <header class="p-4 mb-6 bg-white shadow" v-if="$slots.header">
+      <slot name="header" />
     </header>
 
+    <!-- Flash message -->
+    <div v-if="flash?.message" class="p-4 mx-auto mb-4 text-green-800 bg-green-100 rounded max-w-7xl">
+      {{ flash.message }}
+    </div>
+
     <!-- Contenu principal -->
-    <main class="flex-1 p-6 bg-gray-100">
+    <main class="p-6 mx-auto max-w-7xl">
       <slot />
     </main>
+
   </div>
 </template>
