@@ -2,49 +2,63 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\TechnologyController;
-use App\Http\Controllers\ExperienceController;
-use App\Http\Controllers\FormationController;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\TechnologyController;
+use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\FormationController;
 use App\Http\Controllers\PersonalInfoController;
 
+// Page d'accueil
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
 
-// Auth + Verified
-Route::middleware(['auth', 'verified'])->group(function () {
+// Dashboard protégé
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard', [
+        'auth' => ['user' => auth()->user()],
+        'errors' => session('errors') ?: new \Illuminate\Support\ViewErrorBag(),
+        'flash' => session()->only('message'),
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+// Routes protégées par auth
+Route::middleware('auth')->group(function () {
 
-    /**
-     * -----------------------------------------
-     * BACKOFFICE ROUTES
-     * -----------------------------------------
-     */
+    // Profil
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Backoffice admin
     Route::prefix('admin')->name('admin.')->group(function () {
 
-        // 🌐 Technologies (CRUD complet)
+        // Technologies CRUD
         Route::resource('technologies', TechnologyController::class);
 
-        // 🧱 Projects (CRUD + images)
+        // Projects CRUD + gallery
         Route::resource('projects', ProjectController::class);
+        Route::post('projects/{project}/gallery/add', [ProjectController::class, 'addGallery'])->name('projects.addGallery');
+        Route::post('projects/{project}/gallery/remove', [ProjectController::class, 'removeGallery'])->name('projects.removeGallery');
+        Route::post('projects/{project}/gallery/reorder', [ProjectController::class, 'reorderGallery'])->name('projects.reorderGallery');
 
-        // 🕓 Experiences
+        // Experiences
         Route::resource('experiences', ExperienceController::class);
 
-        // 🎓 Formations
+        // Formations
         Route::resource('formations', FormationController::class);
 
-        // 👤 PersonalInfo — Singleton (SHOW + EDIT + UPDATE)
-        Route::get('personal-info', [PersonalInfoController::class, 'edit'])
-            ->name('personal-info.edit');
-
-        Route::put('personal-info', [PersonalInfoController::class, 'update'])
-            ->name('personal-info.update');
+        // Personal Info (singleton)
+        Route::get('personal-info', [PersonalInfoController::class, 'edit'])->name('personal-info.edit');
+        Route::put('personal-info', [PersonalInfoController::class, 'update'])->name('personal-info.update');
     });
-
 });
+
+require __DIR__.'/auth.php';
