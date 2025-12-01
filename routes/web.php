@@ -4,25 +4,31 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\ProjectController;
-use App\Http\Controllers\Admin\TechnologyController;
-use App\Http\Controllers\Admin\ExperienceController;
-use App\Http\Controllers\Admin\FormationController;
+use App\Http\Controllers\Back\ProjectController;
+use App\Http\Controllers\Back\TechnologyController;
+use App\Http\Controllers\Back\ExperienceController;
+use App\Http\Controllers\Back\FormationController;
 use App\Http\Controllers\PersonalInfoController;
 
-// Page d'accueil
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// Landing page avec boutons "Entrer" et "Admin"
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return Inertia::render('Shared/LandingPage'); // resources/js/Pages/Shared/LandingPage.vue
 });
 
-// Dashboard protégé
+// Page principale frontoffice pour les visiteurs
+Route::get('/home', function () {
+    return Inertia::render('Front/Home'); // resources/js/Pages/Front/Home.vue
+});
+
+// Dashboard protégé pour admin
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard', [
+    return Inertia::render('Back/Dashboard', [
         'auth' => ['user' => auth()->user()],
         'errors' => session('errors') ?: new \Illuminate\Support\ViewErrorBag(),
         'flash' => session()->only(['message']),
@@ -30,9 +36,9 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Routes protégées par auth
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
 
-    // Profil
+    // Profil utilisateur
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -49,10 +55,10 @@ Route::middleware('auth')->group(function () {
         Route::post('projects/{project}/gallery/remove', [ProjectController::class, 'removeGallery'])->name('projects.removeGallery');
         Route::post('projects/{project}/gallery/reorder', [ProjectController::class, 'reorderGallery'])->name('projects.reorderGallery');
 
-        // Experiences
+        // Experiences CRUD
         Route::resource('experiences', ExperienceController::class);
 
-        // Formations
+        // Formations CRUD
         Route::resource('formations', FormationController::class);
 
         // Personal Info (singleton)
@@ -61,4 +67,5 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+// Auth routes (login, register, password reset)
 require __DIR__.'/auth.php';
