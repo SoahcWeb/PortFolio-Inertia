@@ -4,10 +4,10 @@ import FrontLayout from '@/Pages/Front/FrontLayout.vue';
 import { ref, onMounted, nextTick } from 'vue';
 
 const bannerCards = [
-  { id: 1, title: 'À propos', description: 'Découvrez mon univers et mon parcours.', image: '/images/photo.jpg', link: '/a-propos' },
-  { id: 2, title: 'Mes Projets', description: 'Nouveautés & réalisations', image: '/images/project-icon.png', link: '/projets' },
-  { id: 3, title: 'Nethra.AI', description: 'Innovation & IA', image: '/images/nethra-icon.png', link: '/nethra' },
-  { id: 4, title: 'A venir : Musique.AI & Roman', description: 'Projets futurs', image: '/images/future-icon.png', link: '/coming-soon' },
+  { id: 1, title: 'À propos', description: 'Découvrez mon univers et mon parcours.', image: '/images/icons/apropos.png', link: '/a-propos' },
+  { id: 2, title: 'Mes Projets', description: 'Nouveautés & réalisations', image: '/images/icons/project-icon.png', link: '/projets' },
+  { id: 3, title: 'Nethra.AI', description: 'Innovation & IA', image: '/images/icons/nethra-icon.png', link: '/nethra' },
+  { id: 4, title: 'A venir : Musique.AI & Roman', description: 'Projets futurs', image: '/images/icons/future-icon.png', link: '/coming-soon' },
 ];
 
 const carouselRef = ref(null);
@@ -55,14 +55,14 @@ function onScroll() {
     const distance = containerCenter - childCenter;
 
     const absDistance = Math.abs(distance);
-    const scale = absDistance < 360 ? 0.9 : 0.7; // Cadre central réduit de 10% vs cadre normal
+    const scale = absDistance < 360 ? 0.9 : 0.7;
     const rotateY = Math.max(Math.min(distance / 10, 30), -30);
     const opacity = absDistance < 360 ? 1 : 0.5;
 
     child.style.transform = `scale(${scale}) rotateY(${rotateY}deg)`;
     container.children[i].style.opacity = opacity;
 
-    // Glow violet dynamique #C96BFF
+    // Halo mauve dynamique #C96BFF
     if (absDistance < 360) {
       child.style.boxShadow = `0 0 40px 10px rgba(201,107,255,0.45)`;
     } else {
@@ -98,22 +98,21 @@ function onScroll() {
           class="flex-shrink-0 transition-all duration-500 cursor-pointer snap-center"
           @click="window.location.href = card.link"
         >
-          <!-- Carte avec glow violet -->
           <div
             class="content-inner relative flex flex-col items-center justify-center text-center w-[720px] h-[404px] p-8
                    bg-[#0F0F2F]/70 rounded-xl shadow-md transition-transform duration-500
                    ring-4 ring-[#0F0F2F]/30 hover:ring-[#C96BFF] will-change-transform"
           >
             <img v-if="card.image" :src="card.image" class="object-contain w-40 h-40 mb-4" />
-            <h3 class="text-3xl font-bold text-[#C96BFF] mb-2">{{ card.title }}</h3>
+            <h3 class="text-3xl font-bold text-[#4FA8FF] mb-2">{{ card.title }}</h3>
             <p class="text-[#E0E6F0] text-lg">{{ card.description }}</p>
           </div>
         </div>
       </div>
 
       <!-- Navigation -->
-      <button class="absolute left-4 top-1/2 -translate-y-1/2 text-[#C96BFF] text-3xl font-bold z-20" @click="prev">&#8249;</button>
-      <button class="absolute right-4 top-1/2 -translate-y-1/2 text-[#C96BFF] text-3xl font-bold z-20" @click="next">&#8250;</button>
+      <button class="absolute left-4 top-1/2 -translate-y-1/2 text-[#4FA8FF] text-3xl font-bold z-20" @click="prev">&#8249;</button>
+      <button class="absolute right-4 top-1/2 -translate-y-1/2 text-[#4FA8FF] text-3xl font-bold z-20" @click="next">&#8250;</button>
 
       <!-- Pagination -->
       <div class="absolute z-20 flex justify-center w-full gap-4 bottom-4">
@@ -127,18 +126,40 @@ function onScroll() {
     </section>
 
     <!-- Séparateur après Hero -->
-    <div class="w-full h-2 bg-gradient-to-r from-[#0F0F2F] via-[#0F2F4F] to-[#0F0F2F]"></div>
+    <div class="w-full h-2 bg-gradient-to-r from-[#0F0F2F] via-[#0F2F4F] to-[#0F0F2F] mb-12"></div>
 
-    <!-- Section 4 cartes semi-transparentes -->
-    <section class="px-12 py-20 bg-[#0F0F2F]/70 rounded-xl max-w-7xl mx-auto space-y-20">
-      <div
-        v-for="(card, index) in bannerCards"
-        :key="card.id"
-        class="flex flex-col items-center justify-between md:flex-row md:space-x-12"
-        :class="index % 2 === 0 ? '' : 'md:flex-row-reverse'"
-      >
-        <img :src="card.image" class="object-contain w-48 h-48" />
-        <p class="text-[#E0E6F0] text-center md:text-left md:max-w-2xl text-lg">{{ card.description }}</p>
+    <!-- SECTION BIENVENUE -->
+    <section class="max-w-5xl px-8 py-12 mx-auto">
+      <div class="mb-12 text-center">
+        <h2 class="text-4xl font-bold text-[#4FA8FF]">Bienvenue sur mon Portfolio</h2>
+        <p class="text-[#A8B4C8] text-lg mt-2">
+          Découvrez mon univers, mes projets et mes passions à travers ces sections.
+        </p>
+      </div>
+
+      <!-- Section 4 cartes semi-transparentes avec halo réduit et icônes collées -->
+      <div class="space-y-20">
+        <div
+          v-for="(card, index) in bannerCards"
+          :key="card.id"
+          class="flex flex-col items-center justify-between md:flex-row md:space-x-12"
+          :class="index % 2 === 0 ? '' : 'md:flex-row-reverse'"
+        >
+          <!-- Carte image -->
+          <div
+            class="relative flex flex-col items-center text-center w-48 h-48
+                   bg-[#0F0F2F]/70 rounded-xl border-4 border-[#0F0F2F]/30
+                   transition-all duration-500
+                   hover:border-[#C96BFF] hover:shadow-[0_0_20px_5px_rgba(201,107,255,0.45)]"
+          >
+            <img :src="card.image" class="object-contain w-full h-full rounded-xl" />
+          </div>
+
+          <!-- Description -->
+          <p class="text-[#E0E6F0] text-center md:text-left md:max-w-2xl text-lg mt-4 md:mt-0">
+            {{ card.description }}
+          </p>
+        </div>
       </div>
     </section>
   </FrontLayout>
@@ -158,7 +179,7 @@ function onScroll() {
   scrollbar-width: none;
 }
 
-/* Glow pulsante possible */
+/* Glow pulsante mauve du carousel */
 @keyframes glowPulse {
   0% { box-shadow: 0 0 40px 10px rgba(201,107,255,0.35); }
   50% { box-shadow: 0 0 60px 20px rgba(201,107,255,0.5); }
