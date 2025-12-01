@@ -25,7 +25,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', [
         'auth' => ['user' => auth()->user()],
         'errors' => session('errors') ?: new \Illuminate\Support\ViewErrorBag(),
-        'flash' => session()->only('message'),
+        'flash' => session()->only(['message']),
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
