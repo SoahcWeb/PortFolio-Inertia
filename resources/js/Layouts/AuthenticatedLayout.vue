@@ -1,7 +1,7 @@
 <template>
-  <div class="flex min-h-screen bg-black text-[#E0E6F0]">
+  <div class="flex h-screen bg-black text-[#E0E6F0] overflow-hidden">
 
-    <!-- SIDEBAR DESKTOP avec image entière alignée en haut -->
+    <!-- SIDEBAR DESKTOP avec image entière alignée sur le haut -->
     <aside class="relative flex-col hidden w-64 overflow-hidden shadow-lg md:flex">
 
       <!-- Image entière visible, alignée sur le haut -->
@@ -9,47 +9,43 @@
         <img src="/images/sideadmin.png" class="object-contain object-top w-full h-full" />
       </div>
 
-      <!-- Overlay sombre pour lisibilité -->
-      <div class="absolute inset-0 bg-black/50"></div>
-
       <div class="relative z-10 flex flex-col h-full">
 
-        <!-- Titre Dashboard -->
-        <div class="p-6 border-b border-[#1A1A1A] flex flex-col items-center">
-          <h1 class="text-xl font-bold text-[#52c5ff]">Dashboard</h1>
+        <!-- Titre Dashboard agrandi -->
+        <div class="flex flex-col items-center p-6 mt-2">
+          <h1 class="text-4xl font-bold text-[#52c5ff]">Dashboard</h1>
         </div>
 
-        <!-- Navigation -->
-        <nav class="relative z-10 flex-1 px-2 py-4 space-y-1">
-          <template v-for="item in navItems" :key="item.href">
-            <Link
-              :href="item.href"
-              class="flex items-center gap-3 px-3 py-2 text-sm text-[#E0E6F0] transition rounded-md hover:bg-[#1A1A1A]/70 hover:text-[#C96BFF]"
-              :class="{ 'bg-[#1A1A1A]/50 text-[#C96BFF] font-semibold': route().current(item.href.replace('/', '.')) }"
-            >
-              <span v-html="Icon(item.icon, { class: 'h-5 w-5' })"></span>
-              <span>{{ item.title }}</span>
-            </Link>
-          </template>
-        </nav>
+        <!-- Icônes (côte à côte dans le tiers inférieur) avec hover glow identique au dashboard -->
+        <div class="absolute flex justify-center w-full space-x-4" style="bottom: 11.5%;">
 
-        <!-- Déconnexion -->
-        <form method="post" action="/logout" class="p-4 border-t border-[#1A1A1A] relative z-10">
-          <button
-            type="submit"
-            class="flex items-center gap-3 px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-900/20"
-          >
-            <span v-html="Icon('logout')"></span>
-            Déconnexion
-          </button>
-        </form>
+          <!-- Déconnexion -->
+          <a href="/logout" class="flex flex-col items-center">
+            <img src="/images/icons/unlock.png"
+                 class="w-[105px] h-[105px] rounded-xl border border-[#0F0F2F]/50
+                        bg-[#0F0F2F]/80 transition-all duration-300
+                        hover:border-[#C96BFF] hover:shadow-[0_0_15px_rgba(201,107,255,0.45)]
+                        hover:scale-105" />
+            <span class="text-[#52c5ff] mt-2 text-sm font-bold pointer-events-none">Logout</span>
+          </a>
+
+          <!-- Retour Dashboard -->
+          <a href="/dashboard" class="flex flex-col items-center">
+            <img src="/images/icons/retour.png"
+                 class="w-[105px] h-[105px] rounded-xl border border-[#0F0F2F]/50
+                        bg-[#0F0F2F]/80 transition-all duration-300
+                        hover:border-[#C96BFF] hover:shadow-[0_0_15px_rgba(201,107,255,0.45)]
+                        hover:scale-105" />
+            <span class="text-[#52c5ff] mt-2 text-sm font-bold pointer-events-none">Retour</span>
+          </a>
+        </div>
 
       </div>
     </aside>
 
     <!-- MOBILE HEADER -->
     <header class="flex items-center justify-between p-4 bg-[#0F0F2F] shadow md:hidden">
-      <h1 class="text-lg font-bold text-[#52c5ff]">Dashboard</h1>
+      <h1 class="text-4xl font-bold text-[#52c5ff]">Dashboard</h1>
       <button @click="mobileOpen = !mobileOpen">
         <svg class="w-6 h-6 text-[#E0E6F0]" fill="none" stroke="currentColor" stroke-width="2">
           <path v-if="!mobileOpen" stroke-linecap="round" stroke-linejoin="round"
@@ -90,7 +86,7 @@
     </transition>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 p-6">
+    <main class="flex-1 p-6 overflow-hidden">
       <slot />
     </main>
   </div>
