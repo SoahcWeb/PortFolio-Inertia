@@ -11,10 +11,10 @@ const props = defineProps({
 
 <template>
   <AuthenticatedLayout
-      title="Dashboard"
-      :auth="props.auth"
-      :errors="props.errors"
-      :flash="props.flash"
+    title="Dashboard"
+    :auth="props.auth"
+    :errors="props.errors"
+    :flash="props.flash"
   >
     <template #header>
       <h2 class="text-2xl font-bold text-[#52c5ff] drop-shadow-md text-center">
@@ -23,19 +23,33 @@ const props = defineProps({
     </template>
 
     <!-- 🌌 Contenu global -->
-    <div class="w-full min-h-screen p-6">
+    <div class="w-full min-h-screen px-6 py-3">
 
-      <!-- Message de bienvenue -->
+      <!-- 🟣 Message de bienvenue avec image fixe et texte centré -->
       <div
-        class="bg-[#0F0F2F]/80 shadow-lg shadow-black/40 rounded-xl border border-[#0F0F2F] p-6 mb-8 text-center"
+        class="relative bg-[#0F0F2F]/80 shadow-lg shadow-black/40 rounded-xl border border-[#0F0F2F]
+               mb-4 flex items-center overflow-hidden p-4"
       >
-        <p class="text-[#E0E6F0] text-lg">
-          Namasté <span class="text-[#52c5ff] font-semibold">{{ auth?.user?.name || 'Utilisateur' }}</span> !
-          Votre présence éclaire le sanctuaire.
-        </p>
+        <!-- Image dashboard -->
+        <img
+          src="/images/icons/dashboard.png"
+          alt="Dashboard"
+          class="w-[120px] h-[120px] object-cover rounded-xl flex-shrink-0 mr-6"
+        />
+
+        <!-- Texte centré dans le cadre -->
+        <div class="absolute inset-0 flex items-center justify-center px-4">
+          <p class="text-[#E0E6F0] font-semibold text-center leading-tight text-1xl sm:text-2xl md:text-3xl lg:text-3xl break-words">
+            Namasté
+            <span class="text-[#52c5ff]">
+              {{ props.auth?.user?.name || 'Utilisateur' }}
+            </span> !
+            Votre présence éclaire le sanctuaire.
+          </p>
+        </div>
       </div>
 
-      <!-- 🔥 Menu du Dashboard : Infos personnelles en premier -->
+      <!-- 🔥 Menu du Dashboard -->
       <div class="grid grid-cols-1 gap-6 mt-6 md:grid-cols-2 lg:grid-cols-3">
 
         <!-- 1️⃣ Infos personnelles -->
@@ -98,14 +112,40 @@ const props = defineProps({
           <p class="text-sm text-[#A8B4C8]">Diplômes et formations</p>
         </Link>
 
+        <!-- 6️⃣ Carte Nethra LifeDesk -->
+        <div
+          class="block p-6 transition rounded-xl shadow-md
+                 bg-[#0F0F2F]/80 border border-[#0F0F2F]/50
+                 hover:border-[#52c5ff] hover:shadow-[0_0_15px_rgba(82,197,255,0.45)]"
+        >
+          <div class="flex items-center gap-4">
+            <!-- Image LifeDesk -->
+            <img
+              src="/images/lifedesk.png"
+              alt="Nethra LifeDesk"
+              class="w-[96px] h-[96px] rounded object-cover flex-shrink-0"
+            />
+
+            <div>
+              <h3 class="text-xl font-semibold text-[#52c5ff] mb-1">
+                Nethra LifeDesk
+              </h3>
+              <p class="text-sm text-[#A8B4C8] leading-snug">
+                Nethra LifeDesk centralise votre quotidien : calendrier interactif,
+                tâches personnelles et de groupe, gestion des anniversaires,
+                liste de courses, bloc-notes et statistiques.
+                Une plateforme claire et intuitive pour organiser chaque jour.
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-
   </AuthenticatedLayout>
 </template>
 
 <style scoped>
-/* Optionnel : effet glow léger pour toutes les cartes */
 a:hover {
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   transform: translateY(-2px);
