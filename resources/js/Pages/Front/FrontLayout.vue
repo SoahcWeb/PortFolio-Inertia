@@ -1,5 +1,5 @@
 <template>
-  <div class="relative min-h-screen bg-[#000000] text-[#FFFFFF] font-sans">
+  <div class="relative min-h-screen bg-[#000000] text-[#FFFFFF] font-sans flex flex-col">
     <!-- Header -->
     <header
       class="fixed top-0 left-0 w-full flex items-center justify-center px-4 z-50 h-24 backdrop-blur-md bg-[#0F0F2F]/70 shadow-md"
@@ -71,45 +71,33 @@
     </header>
 
     <!-- Main -->
-    <main class="pb-16 pt-28">
+    <main class="flex-grow pt-28">
       <slot />
     </main>
 
     <!-- Footer -->
-    <footer class="bg-[#0F0F2F] text-[#E0E6F0] shadow-inner mt-8">
-      <div class="flex flex-col items-center justify-between p-4 mx-auto max-w-7xl md:flex-row">
-        <p class="text-sm">&copy; 2025 John. Tous droits réservés.</p>
-        <div class="flex gap-4 mt-2 md:mt-0">
-          <a href="#" class="text-[#4FA8FF] hover:text-[#88CCFF]">Facebook</a>
-          <a href="#" class="text-[#4FA8FF] hover:text-[#88CCFF]">Twitter</a>
-          <a href="#" class="text-[#4FA8FF] hover:text-[#88CCFF]">LinkedIn</a>
-        </div>
-      </div>
-    </footer>
+    <Footer />
   </div>
 </template>
 
-<script>
-import { usePage } from '@inertiajs/vue3'
+<script setup>
+import { ref } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+import Footer from './Footer.vue'; // <-- Import du Footer
 
-export default {
-  name: "FrontLayout",
-  setup() {
-    const page = usePage();
+const page = usePage();
 
-    const navItems = [
-      { name: "Accueil", link: "/" },
-      { name: "A propos", link: "/a-propos" },
-      { name: "Projets Web", link: "/projets-web" },
-      { name: "Musique.AI", link: "#", disabled: true },
-      { name: "Roman", link: "#", disabled: true },
-      { name: "Contact", link: "/contact" },
-      { name: "Nethra.IA", link: "/nethra-ia" },
-    ];
+const navItems = [
+  { name: "Accueil", link: "/" },
+  { name: "A propos", link: "/a-propos" },
+  { name: "Projets Web", link: "/projets-web" },
+  { name: "Musique.AI", link: "#", disabled: true },
+  { name: "Roman", link: "#", disabled: true },
+  { name: "Contact", link: "/contact" },
+  { name: "Nethra.IA", link: "/nethra-ia" },
+];
 
-    return { page, navItems, mobileMenuOpen: false };
-  }
-}
+const mobileMenuOpen = ref(false);
 </script>
 
 <style scoped>
@@ -160,6 +148,4 @@ export default {
 .slide-right-leave-active { transition: transform 0.3s ease-in; }
 .slide-right-enter-from,
 .slide-right-leave-to { transform: translateX(100%); }
-
-/* Frosted glass effect pour le header déjà appliqué via backdrop-blur-md et bg-opacity */
 </style>

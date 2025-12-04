@@ -66,7 +66,7 @@ export default {
   z-index: -1;
 }
 
-/* Bouton Entrer cercle parfait avec pulsation */
+/* Bouton Entrer cercle parfait avec pulsation subtile */
 .btn-enter {
   position: absolute;
   bottom: calc(20px + 1.5cm);
@@ -82,28 +82,28 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: pulse 4s infinite alternate ease-in-out; /* seulement pulsation */
+  animation: pulse 6s infinite alternate ease-in-out; /* pulsation plus lente et douce */
   transition: transform 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
 }
 
 .btn-enter img {
-  width: 98%; /* image proche de la bordure */
+  width: 90%; /* image légèrement plus petite pour laisser du padding */
   height: auto;
   display: block;
-  pointer-events: none;
+  pointer-events: none; /* important pour que le clic fonctionne sur tout le bouton */
 }
 
-/* Hover violet néon avec bordure et glow léger */
+/* Hover violet néon subtil */
 .btn-enter:hover {
   border-color: #C96BFF; /* apparait uniquement au hover */
-  box-shadow: 0 0 8px rgba(201,107,255,0.25);
-  transform: scale(1.1);
+  box-shadow: 0 0 6px rgba(201,107,255,0.2); /* glow plus léger et doux */
+  transform: scale(1.08); /* zoom léger */
 }
 
-/* Pulsation continue */
+/* Pulsation douce */
 @keyframes pulse {
   0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  50% { transform: scale(1.03); }
   100% { transform: scale(1); }
 }
 
