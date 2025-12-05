@@ -22,8 +22,7 @@ class FormationController extends Controller
             ->paginate(10)
             ->withQueryString(); // pour garder les filtres dans l'URL
 
-        return Inertia::render('Admin/Formations/Index', [
-            'formations' => $formations,
+        return Inertia::render('Admin/Formations/Index', compact('formations'), [
             'filters' => [
                 'sort' => $sort,
                 'direction' => $direction,
@@ -36,7 +35,7 @@ class FormationController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Admin/Formations/Create');
+        return Inertia::render('Back/Formations/Create');
     }
 
     /**
@@ -70,22 +69,16 @@ class FormationController extends Controller
     /**
      * Formulaire d’édition
      */
-    public function edit($id)
+    public function edit(Formation $formation)
     {
-        $formation = Formation::findOrFail($id);
-
-        return Inertia::render('Admin/Formations/Edit', [
-            'formation' => $formation,
-        ]);
+        return Inertia::render('Back/Formations/Edit', compact('formation'));
     }
 
     /**
      * Mettre à jour la formation
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Formation $formation)
     {
-        $formation = Formation::findOrFail($id);
-
         $validated = $request->validate([
             'title'        => 'required|string|max:255',
             'school'       => 'required|string|max:255',
@@ -115,10 +108,8 @@ class FormationController extends Controller
     /**
      * Supprimer une formation
      */
-    public function destroy($id)
+    public function destroy(Formation $formation)
     {
-        $formation = Formation::findOrFail($id);
-
         // Supprimer le logo si existant
         if ($formation->logo && Storage::disk('public')->exists($formation->logo)) {
             Storage::disk('public')->delete($formation->logo);

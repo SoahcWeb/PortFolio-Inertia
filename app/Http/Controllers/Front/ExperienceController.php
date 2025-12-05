@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Front;
 
+use App\Http\Controllers\Controller;
 use App\Models\Experience;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -10,14 +11,15 @@ class ExperienceController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Experiences/Index', [
-            'experiences' => Experience::orderByDesc('start_date')->get(),
+        $experiences = Experience::orderByDesc('start_date')->get();
+        return Inertia::render('Front/Experiences/Index', [
+            'experiences' => $experiences,
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Experiences/Create');
+        return Inertia::render('Front/Experiences/Create');
     }
 
     public function store(Request $request)
@@ -39,7 +41,7 @@ class ExperienceController extends Controller
 
     public function edit(Experience $experience)
     {
-        return Inertia::render('Experiences/Edit', [
+        return Inertia::render('Front/Experiences/Edit', [
             'experience' => $experience,
         ]);
     }
@@ -64,7 +66,6 @@ class ExperienceController extends Controller
     public function destroy(Experience $experience)
     {
         $experience->delete();
-
         return redirect()->route('experiences.index')->with('success', 'Expérience supprimée.');
     }
 }
