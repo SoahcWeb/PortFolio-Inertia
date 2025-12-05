@@ -9,77 +9,67 @@ use Inertia\Inertia;
 
 class ExperienceController extends Controller
 {
-    // Liste des expériences avec pagination et tri
     public function index(Request $request)
     {
-        $experiences = Experience::orderBy(
-            $request->get('sort', 'start_date'),
-            $request->get('direction', 'desc')
-        )->paginate(10);
+        $sort = $request->get('sort', 'start_date');
+        $direction = $request->get('direction', 'desc');
 
-        return Inertia::render('Admin/Experiences/Index', compact('experiences'));
+        $experiences = Experience::orderBy($sort, $direction)
+            ->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('Admin/Experiences/Index', compact('experiences'))
+            ->with('filters', compact('sort', 'direction'));
     }
 
-    // Formulaire de création
     public function create()
     {
         return Inertia::render('Admin/Experiences/Create');
     }
 
-    // Stockage d'une nouvelle expérience
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'company' => 'required|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'type' => 'nullable|string|max:50',
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'company'     => 'required|string|max:255',
+            'location'    => 'nullable|string|max:255',
+            'type'        => 'nullable|string|max:50',
+            'start_date'  => 'required|date',
+            'end_date'    => 'nullable|date|after_or_equal:start_date',
             'description' => 'nullable|string',
         ]);
 
-        Experience::create($validated);
+        Experience::create($data);
 
-        return redirect()->route('admin.experiences.index')
-            ->with('success', 'Expérience créée avec succès.');
+        return redirect()->route('admin.experiences.index')->with('success', 'Expérience créée.');
     }
 
-    // Formulaire de modification
-    public function edit($id)
+    public function edit(Experience $experience)
     {
-        $experience = Experience::findOrFail($id);
         return Inertia::render('Admin/Experiences/Edit', compact('experience'));
     }
 
-    // Mise à jour d'une expérience
-    public function update(Request $request, $id)
+    public function update(Request $request, Experience $experience)
     {
-        $experience = Experience::findOrFail($id);
-
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'company' => 'required|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'type' => 'nullable|string|max:50',
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'company'     => 'required|string|max:255',
+            'location'    => 'nullable|string|max:255',
+            'type'        => 'nullable|string|max:50',
+            'start_date'  => 'required|date',
+            'end_date'    => 'nullable|date|after_or_equal:start_date',
             'description' => 'nullable|string',
         ]);
 
-        $experience->update($validated);
+        $experience->update($data);
 
-        return redirect()->route('admin.experiences.index')
-            ->with('success', 'Expérience mise à jour avec succès.');
+        return redirect()->route('admin.experiences.index')->with('success', 'Expérience mise à jour.');
     }
 
-    // Suppression d'une expérience
-    public function destroy($id)
+    public function destroy(Experience $experience)
     {
-        $experience = Experience::findOrFail($id);
         $experience->delete();
 
-        return redirect()->route('admin.experiences.index')
-            ->with('success', 'Expérience supprimée avec succès.');
+        return redirect()->route('admin.experiences.index')->with('success', 'Expérience supprimée.');
     }
 }

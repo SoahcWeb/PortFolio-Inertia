@@ -1,24 +1,25 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Front;
 
+use App\Http\Controllers\Controller;
 use App\Models\Technology;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class TechnologyController extends Controller
 {
     public function index()
     {
         $technologies = Technology::orderBy('order')->get();
-        return Inertia::render('Technologies/Index', compact('technologies'));
+        return Inertia::render('Front/Technologies/Index', compact('technologies'));
     }
 
     public function create()
     {
-        return Inertia::render('Technologies/Create');
+        return Inertia::render('Front/Technologies/Create');
     }
 
     public function store(Request $request)
@@ -29,7 +30,7 @@ class TechnologyController extends Controller
             'level' => ['required', Rule::in(['Débutant','Intermédiaire','Avancé','Expert'])],
             'color' => 'nullable|string|max:7',
             'order' => 'nullable|integer',
-            'logo' => 'nullable|image|max:5120', // max 5MB
+            'logo' => 'nullable|image|max:5120',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -38,12 +39,12 @@ class TechnologyController extends Controller
 
         Technology::create($data);
 
-        return redirect()->route('technologies.index')->with('success', 'Technology created.');
+        return redirect()->route('technologies.index')->with('success', 'Technology créée.');
     }
 
     public function edit(Technology $technology)
     {
-        return Inertia::render('Technologies/Edit', compact('technology'));
+        return Inertia::render('Front/Technologies/Edit', compact('technology'));
     }
 
     public function update(Request $request, Technology $technology)
@@ -58,7 +59,6 @@ class TechnologyController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            // Supprimer ancien logo
             if ($technology->logo) {
                 Storage::disk('public')->delete($technology->logo);
             }
@@ -67,7 +67,7 @@ class TechnologyController extends Controller
 
         $technology->update($data);
 
-        return redirect()->route('technologies.index')->with('success', 'Technology updated.');
+        return redirect()->route('technologies.index')->with('success', 'Technology mise à jour.');
     }
 
     public function destroy(Technology $technology)
@@ -78,6 +78,6 @@ class TechnologyController extends Controller
 
         $technology->delete();
 
-        return redirect()->route('technologies.index')->with('success', 'Technology deleted.');
+        return redirect()->route('technologies.index')->with('success', 'Technology supprimée.');
     }
 }
