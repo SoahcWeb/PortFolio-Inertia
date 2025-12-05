@@ -14,12 +14,19 @@ class PersonalInfoController extends Controller
     {
         $personalInfo = PersonalInfo::first();
         if (!$personalInfo) {
+            // Création automatique d'un profil vide avec valeurs par défaut
             $personalInfo = PersonalInfo::create([
+                'full_name'     => 'Utilisateur', // valeur par défaut pour éviter NOT NULL
+                'job_title'     => null,
+                'bio'           => null,
+                'email'         => null,
+                'phone'         => null,
+                'location'      => null,
                 'profile_photo' => null,
-                'cv' => null,
-                'linkedin' => '',
-                'github' => '',
-                'availability' => '',
+                'cv'            => null,
+                'linkedin'      => '',
+                'github'        => '',
+                'availability'  => '',
             ]);
         }
 
@@ -32,7 +39,7 @@ class PersonalInfoController extends Controller
 
         $validated = $request->validate([
             'full_name'     => 'nullable|string|max:255',
-            'title'         => 'nullable|string|max:255',
+            'job_title'     => 'nullable|string|max:255',
             'bio'           => 'nullable|string',
             'email'         => 'nullable|email|max:255',
             'phone'         => 'nullable|string|max:255',
@@ -45,6 +52,7 @@ class PersonalInfoController extends Controller
             'cv'            => 'nullable|file|mimes:pdf,doc,docx|max:10240',
         ]);
 
+        // Gestion photo
         if ($request->hasFile('profile_photo')) {
             if ($personalInfo->profile_photo && Storage::disk('public')->exists($personalInfo->profile_photo)) {
                 Storage::disk('public')->delete($personalInfo->profile_photo);
@@ -52,6 +60,7 @@ class PersonalInfoController extends Controller
             $validated['profile_photo'] = $request->file('profile_photo')->store('personal', 'public');
         }
 
+        // Gestion CV
         if ($request->hasFile('cv')) {
             if ($personalInfo->cv && Storage::disk('public')->exists($personalInfo->cv)) {
                 Storage::disk('public')->delete($personalInfo->cv);

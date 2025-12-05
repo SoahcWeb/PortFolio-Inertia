@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { watch } from 'vue';
+import { ref, watch } from 'vue'; // ← ajouter ref ici
 
 const props = defineProps({
   personalInfo: {
@@ -17,6 +17,7 @@ const props = defineProps({
   method: { type: String, default: 'put' }
 });
 
+// Initialisation du formulaire
 const form = useForm({
   profile_photo: null,
   cv: null,
@@ -25,16 +26,17 @@ const form = useForm({
   availability: props.personalInfo.availability || '',
 });
 
-// Prévisualisation photo
+// Prévisualisation de la photo
 const previewPhoto = ref(props.personalInfo.profile_photo ? `/storage/${props.personalInfo.profile_photo}` : null);
 
-// Mettre à jour preview
+// Mettre à jour la preview si l'utilisateur change la photo
 watch(() => form.profile_photo, file => {
   if (file) {
     previewPhoto.value = URL.createObjectURL(file);
   }
 });
 
+// Soumission du formulaire
 function submit() {
   form.submit(props.method, props.submitUrl);
 }

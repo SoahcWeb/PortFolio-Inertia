@@ -152,12 +152,11 @@ a:hover {
 /* Scrollbar personnalisée */
 .dashboard-scroll {
   flex: 1;
-  overflow-y: scroll; /* Toujours visible */
-  padding-right: 12px; /* Empêche la barre de scroll de toucher le bloc Namasté */
-  margin-right: -6px;  /* Rapproche visuellement la scrollbar du bord droit */
+  overflow-y: scroll;
+  padding-right: 12px;
+  margin-right: -6px;
 }
 
-/* Webkit */
 .dashboard-scroll::-webkit-scrollbar {
   width: 8px;
 }
@@ -173,7 +172,6 @@ a:hover {
   border: 2px solid rgba(15,15,47,0.8);
 }
 
-/* Firefox */
 .dashboard-scroll {
   scrollbar-width: thin;
   scrollbar-color: #52c5ff rgba(15,15,47,0.8);
