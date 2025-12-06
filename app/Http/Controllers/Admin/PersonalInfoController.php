@@ -13,10 +13,11 @@ class PersonalInfoController extends Controller
     public function edit()
     {
         $personalInfo = PersonalInfo::first();
+
         if (!$personalInfo) {
             // Création automatique d'un profil vide avec valeurs par défaut
             $personalInfo = PersonalInfo::create([
-                'full_name'     => 'Utilisateur', // valeur par défaut pour éviter NOT NULL
+                'full_name'     => 'Utilisateur',
                 'job_title'     => null,
                 'bio'           => null,
                 'email'         => null,
@@ -26,11 +27,14 @@ class PersonalInfoController extends Controller
                 'cv'            => null,
                 'linkedin'      => '',
                 'github'        => '',
+                'twitter'       => '',
                 'availability'  => '',
             ]);
         }
 
-        return Inertia::render('Back/PersonalInfo/Edit', compact('personalInfo'));
+        return Inertia::render('Back/PersonalInfo/Edit', [
+            'personalInfo' => $personalInfo
+        ]);
     }
 
     public function update(Request $request)
@@ -50,28 +54,54 @@ class PersonalInfoController extends Controller
             'twitter'       => 'nullable|url|max:255',
             'profile_photo' => 'nullable|image|max:5120',
             'cv'            => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'remove_profile_photo' => 'nullable|boolean',
+            'remove_cv' => 'nullable|boolean',
         ]);
 
-        // Gestion photo
+        // Gestion suppression photo
+        if (!empty($validated['remove_profile_photo']) && $personalInfo->profile_photo) {
+            Storage::disk('public')->delete($personalInfo->profile_photo);
+            $personalInfo->profile_photo = null;
+        }
+
+        // Gestion suppression CV
+        if (!empty($validated['remove_cv']) && $personalInfo->cv) {
+            Storage::disk('public')->delete($personalInfo->cv);
+            $personalInfo->cv = null;
+        }
+
+        // Upload nouvelle photo
         if ($request->hasFile('profile_photo')) {
-            if ($personalInfo->profile_photo && Storage::disk('public')->exists($personalInfo->profile_photo)) {
+            if ($personalInfo->profile_photo) {
                 Storage::disk('public')->delete($personalInfo->profile_photo);
             }
-            $validated['profile_photo'] = $request->file('profile_photo')->store('personal', 'public');
+            $personalInfo->profile_photo = $request->file('profile_photo')->store('personal', 'public');
         }
 
-        // Gestion CV
+        // Upload nouveau CV
         if ($request->hasFile('cv')) {
-            if ($personalInfo->cv && Storage::disk('public')->exists($personalInfo->cv)) {
+            if ($personalInfo->cv) {
                 Storage::disk('public')->delete($personalInfo->cv);
             }
-            $validated['cv'] = $request->file('cv')->store('personal', 'public');
+            $personalInfo->cv = $request->file('cv')->store('personal', 'public');
         }
 
-        $personalInfo->update($validated);
+        // Mise à jour des autres champs
+        $personalInfo->full_name    = $validated['full_name'] ?? $personalInfo->full_name;
+        $personalInfo->job_title    = $validated['job_title'] ?? $personalInfo->job_title;
+        $personalInfo->bio          = $validated['bio'] ?? $personalInfo->bio;
+        $personalInfo->email        = $validated['email'] ?? $personalInfo->email;
+        $personalInfo->phone        = $validated['phone'] ?? $personalInfo->phone;
+        $personalInfo->location     = $validated['location'] ?? $personalInfo->location;
+        $personalInfo->linkedin     = $validated['linkedin'] ?? $personalInfo->linkedin;
+        $personalInfo->github       = $validated['github'] ?? $personalInfo->github;
+        $personalInfo->twitter      = $validated['twitter'] ?? $personalInfo->twitter;
+        $personalInfo->availability = $validated['availability'] ?? $personalInfo->availability;
 
-        return redirect()
-            ->route('admin.personal-info.edit')
-            ->with('success', 'Informations personnelles mises à jour avec succès !');
+        // Sauvegarde
+        $personalInfo->save();
+
+        return redirect()->route('admin.personal-info.edit')
+                         ->with('success', 'Informations personnelles mises à jour avec succès !');
     }
 }

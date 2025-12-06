@@ -11,14 +11,14 @@ class PersonalInfo extends Model
 
     protected $fillable = [
         'full_name',
-        'title',
+        'job_title',      // nom cohérent avec le formulaire
         'bio',
         'profile_photo',
         'email',
         'phone',
         'location',
         'availability',
-        'cv_path',
+        'cv',             // nom cohérent avec le formulaire
         'linkedin',
         'github',
         'twitter',
@@ -33,6 +33,6 @@ class PersonalInfo extends Model
     // Accessor : URL du CV
     public function getCvUrlAttribute()
     {
-        return $this->cv_path ? asset('storage/'.$this->cv_path) : null;
+        return $this->cv ? asset('storage/'.$this->cv) : null;
     }
 }
