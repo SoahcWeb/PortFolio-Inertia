@@ -11,17 +11,23 @@ class PersonalInfo extends Model
 
     protected $fillable = [
         'full_name',
-        'job_title',      // nom cohérent avec le formulaire
+        'first_name',
+        'last_name',
+        'nickname',
+        'job_title',      // renommé “Profil professionnel” dans le formulaire
         'bio',
         'profile_photo',
         'email',
         'phone',
         'location',
         'availability',
-        'cv',             // nom cohérent avec le formulaire
+        'cv',
         'linkedin',
         'github',
         'twitter',
+        'facebook',
+        'youtube',
+        'tiktok',
     ];
 
     // Accessor : URL photo profil

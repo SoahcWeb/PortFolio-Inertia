@@ -10,98 +10,90 @@ use Inertia\Inertia;
 
 class PersonalInfoController extends Controller
 {
+    /**
+     * Affiche le formulaire d'édition des infos personnelles.
+     */
     public function edit()
     {
-        $personalInfo = PersonalInfo::first();
+        // Récupère le premier enregistrement
+        $info = PersonalInfo::first();
 
-        if (!$personalInfo) {
-            // Création automatique d'un profil vide avec valeurs par défaut
-            $personalInfo = PersonalInfo::create([
-                'full_name'     => 'Utilisateur',
-                'job_title'     => null,
-                'bio'           => null,
-                'email'         => null,
-                'phone'         => null,
-                'location'      => null,
-                'profile_photo' => null,
-                'cv'            => null,
-                'linkedin'      => '',
-                'github'        => '',
-                'twitter'       => '',
-                'availability'  => '',
+        // Si aucun record, en créer un vide
+        if (!$info) {
+            $info = PersonalInfo::create([
+                'first_name'   => 'John',
+                'last_name'    => 'Doe',
+                'nickname'     => 'Johnny',
+                'full_name'    => '', // inutilisé pour le moment
+                'job_title'    => 'Profil professionnel',
+                'bio'          => 'Bio de John',
+                'email'        => 'john@example.com',
+                'phone'        => '+33 6 12 34 56 78',
+                'location'     => 'Paris, France',
+                'availability' => 'Disponible',
+                'linkedin'     => '',
+                'github'       => '',
+                'twitter'      => '',
+                'facebook'     => '',
+                'youtube'      => '',
+                'tiktok'       => '',
+                'profile_photo'=> null,
+                'cv'           => null,
             ]);
         }
 
+        // Renvoi à Inertia avec toutes les infos
         return Inertia::render('Back/PersonalInfo/Edit', [
-            'personalInfo' => $personalInfo
+            'personalInfo' => $info->toArray(), // ← important pour que Vue voie toutes les propriétés
         ]);
     }
 
+    /**
+     * Met à jour les infos personnelles.
+     */
     public function update(Request $request)
     {
-        $personalInfo = PersonalInfo::firstOrFail();
+        $info = PersonalInfo::firstOrFail();
 
-        $validated = $request->validate([
-            'full_name'     => 'nullable|string|max:255',
-            'job_title'     => 'nullable|string|max:255',
-            'bio'           => 'nullable|string',
-            'email'         => 'nullable|email|max:255',
-            'phone'         => 'nullable|string|max:255',
-            'location'      => 'nullable|string|max:255',
-            'availability'  => 'nullable|string|max:255',
-            'linkedin'      => 'nullable|url|max:255',
-            'github'        => 'nullable|url|max:255',
-            'twitter'       => 'nullable|url|max:255',
-            'profile_photo' => 'nullable|image|max:5120',
-            'cv'            => 'nullable|file|mimes:pdf,doc,docx|max:10240',
-            'remove_profile_photo' => 'nullable|boolean',
-            'remove_cv' => 'nullable|boolean',
+        $data = $request->validate([
+            'first_name'   => 'nullable|string|max:255',
+            'last_name'    => 'nullable|string|max:255',
+            'nickname'     => 'nullable|string|max:255',
+            'full_name'    => 'nullable|string|max:255',
+            'job_title'    => 'nullable|string|max:255',
+            'bio'          => 'nullable|string',
+            'email'        => 'nullable|email|max:255',
+            'phone'        => 'nullable|string|max:255',
+            'location'     => 'nullable|string|max:255',
+            'availability' => 'nullable|string|max:255',
+            'linkedin'     => 'nullable|string|max:255',
+            'github'       => 'nullable|string|max:255',
+            'twitter'      => 'nullable|string|max:255',
+            'facebook'     => 'nullable|string|max:255',
+            'youtube'      => 'nullable|string|max:255',
+            'tiktok'       => 'nullable|string|max:255',
+            'profile_photo'=> 'nullable|image|max:5120',
+            'cv'           => 'nullable|file|mimes:pdf,doc,docx|max:10240',
         ]);
 
-        // Gestion suppression photo
-        if (!empty($validated['remove_profile_photo']) && $personalInfo->profile_photo) {
-            Storage::disk('public')->delete($personalInfo->profile_photo);
-            $personalInfo->profile_photo = null;
-        }
-
-        // Gestion suppression CV
-        if (!empty($validated['remove_cv']) && $personalInfo->cv) {
-            Storage::disk('public')->delete($personalInfo->cv);
-            $personalInfo->cv = null;
-        }
-
-        // Upload nouvelle photo
+        // Upload photo
         if ($request->hasFile('profile_photo')) {
-            if ($personalInfo->profile_photo) {
-                Storage::disk('public')->delete($personalInfo->profile_photo);
+            if ($info->profile_photo) {
+                Storage::disk('public')->delete($info->profile_photo);
             }
-            $personalInfo->profile_photo = $request->file('profile_photo')->store('personal', 'public');
+            $data['profile_photo'] = $request->file('profile_photo')->store('personal', 'public');
         }
 
-        // Upload nouveau CV
+        // Upload CV
         if ($request->hasFile('cv')) {
-            if ($personalInfo->cv) {
-                Storage::disk('public')->delete($personalInfo->cv);
+            if ($info->cv) {
+                Storage::disk('public')->delete($info->cv);
             }
-            $personalInfo->cv = $request->file('cv')->store('personal', 'public');
+            $data['cv'] = $request->file('cv')->store('personal', 'public');
         }
 
-        // Mise à jour des autres champs
-        $personalInfo->full_name    = $validated['full_name'] ?? $personalInfo->full_name;
-        $personalInfo->job_title    = $validated['job_title'] ?? $personalInfo->job_title;
-        $personalInfo->bio          = $validated['bio'] ?? $personalInfo->bio;
-        $personalInfo->email        = $validated['email'] ?? $personalInfo->email;
-        $personalInfo->phone        = $validated['phone'] ?? $personalInfo->phone;
-        $personalInfo->location     = $validated['location'] ?? $personalInfo->location;
-        $personalInfo->linkedin     = $validated['linkedin'] ?? $personalInfo->linkedin;
-        $personalInfo->github       = $validated['github'] ?? $personalInfo->github;
-        $personalInfo->twitter      = $validated['twitter'] ?? $personalInfo->twitter;
-        $personalInfo->availability = $validated['availability'] ?? $personalInfo->availability;
+        $info->update($data);
 
-        // Sauvegarde
-        $personalInfo->save();
-
-        return redirect()->route('admin.personal-info.edit')
-                         ->with('success', 'Informations personnelles mises à jour avec succès !');
+        return back()->with('success', 'Informations mises à jour.');
     }
 }

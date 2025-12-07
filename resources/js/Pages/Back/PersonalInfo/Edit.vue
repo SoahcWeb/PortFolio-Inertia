@@ -53,13 +53,30 @@ const personalInfoReactive = reactive({ ...props.personalInfo });
                         <img :src="personalInfoReactive.profile_photo ? `/storage/${personalInfoReactive.profile_photo}` : '/images/default-avatar.png'"
                              class="object-cover w-32 h-32 rounded-full" />
                     </div>
+
                     <div class="mb-2">
-                        <p class="text-sm text-[#52c5ff] font-semibold">Nom complet :</p>
-                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.full_name || 'Non renseigné' }}</p>
+                        <p class="text-sm text-[#52c5ff] font-semibold">Prénom :</p>
+                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.first_name || 'Non renseigné' }}</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="text-sm text-[#52c5ff] font-semibold">Nom :</p>
+                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.last_name || 'Non renseigné' }}</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="text-sm text-[#52c5ff] font-semibold">Surnom :</p>
+                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.nickname || 'Non renseigné' }}</p>
                     </div>
                     <div class="mb-2">
                         <p class="text-sm text-[#52c5ff] font-semibold">Email :</p>
                         <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.email || 'Non renseigné' }}</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="text-sm text-[#52c5ff] font-semibold">Téléphone :</p>
+                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.phone || 'Non renseigné' }}</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="text-sm text-[#52c5ff] font-semibold">Localisation :</p>
+                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.location || 'Non renseigné' }}</p>
                     </div>
                     <div class="mb-2">
                         <p class="text-sm text-[#52c5ff] font-semibold">Titre professionnel :</p>
@@ -69,12 +86,19 @@ const personalInfoReactive = reactive({ ...props.personalInfo });
                         <p class="text-sm text-[#52c5ff] font-semibold">Bio :</p>
                         <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.bio || 'Non renseigné' }}</p>
                     </div>
+                    <div class="mb-2" v-if="personalInfoReactive.cv">
+                        <p class="text-sm text-[#52c5ff] font-semibold">CV :</p>
+                        <a :href="`/storage/${personalInfoReactive.cv}`" target="_blank" class="text-sm text-[#E0E6F0] underline">Voir CV</a>
+                    </div>
                     <div>
                         <p class="text-sm text-[#52c5ff] font-semibold">Réseaux sociaux :</p>
                         <p class="text-sm text-[#E0E6F0]">
                             LinkedIn : {{ personalInfoReactive.linkedin || 'Non renseigné' }}<br>
                             GitHub : {{ personalInfoReactive.github || 'Non renseigné' }}<br>
                             Twitter : {{ personalInfoReactive.twitter || 'Non renseigné' }}<br>
+                            Facebook : {{ personalInfoReactive.facebook || 'Non renseigné' }}<br>
+                            YouTube : {{ personalInfoReactive.youtube || 'Non renseigné' }}<br>
+                            TikTok : {{ personalInfoReactive.tiktok || 'Non renseigné' }}<br>
                             Disponibilité : {{ personalInfoReactive.availability || 'Non renseigné' }}
                         </p>
                     </div>
