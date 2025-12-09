@@ -15,16 +15,14 @@ class PersonalInfoController extends Controller
      */
     public function edit()
     {
-        // Récupère le premier enregistrement
         $info = PersonalInfo::first();
 
-        // Si aucun record, en créer un vide
         if (!$info) {
             $info = PersonalInfo::create([
                 'first_name'   => 'John',
                 'last_name'    => 'Doe',
                 'nickname'     => 'Johnny',
-                'full_name'    => '', // inutilisé pour le moment
+                'full_name'    => '',
                 'job_title'    => 'Profil professionnel',
                 'bio'          => 'Bio de John',
                 'email'        => 'john@example.com',
@@ -42,14 +40,13 @@ class PersonalInfoController extends Controller
             ]);
         }
 
-        // Renvoi à Inertia avec toutes les infos
         return Inertia::render('Back/PersonalInfo/Edit', [
-            'personalInfo' => $info->toArray(), // ← important pour que Vue voie toutes les propriétés
+            'personalInfo' => $info->toArray(),
         ]);
     }
 
     /**
-     * Met à jour les infos personnelles.
+     * Met à jour les infos personnelles via POST.
      */
     public function update(Request $request)
     {
@@ -81,7 +78,10 @@ class PersonalInfoController extends Controller
             if ($info->profile_photo) {
                 Storage::disk('public')->delete($info->profile_photo);
             }
-            $data['profile_photo'] = $request->file('profile_photo')->store('personal', 'public');
+            $file = $request->file('profile_photo');
+            $filename = time().'_'.$file->getClientOriginalName();
+            $file->storeAs('public/profile', $filename);
+            $data['profile_photo'] = 'profile/'.$filename;
         }
 
         // Upload CV
@@ -89,7 +89,10 @@ class PersonalInfoController extends Controller
             if ($info->cv) {
                 Storage::disk('public')->delete($info->cv);
             }
-            $data['cv'] = $request->file('cv')->store('personal', 'public');
+            $file = $request->file('cv');
+            $filename = time().'_'.$file->getClientOriginalName();
+            $file->storeAs('public/profile', $filename);
+            $data['cv'] = 'profile/'.$filename;
         }
 
         $info->update($data);

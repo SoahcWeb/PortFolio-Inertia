@@ -10,7 +10,6 @@ const props = defineProps({
     flash: { type: Object, default: () => ({}) },
 });
 
-// Création d'une version réactive pour permettre la mise à jour instantanée de la carte
 const personalInfoReactive = reactive({ ...props.personalInfo });
 </script>
 
@@ -30,7 +29,7 @@ const personalInfoReactive = reactive({ ...props.personalInfo });
     <div class="flex flex-col h-screen">
         <div class="flex-1 dashboard-scroll">
 
-            <!-- Bloc de présentation -->
+             <!-- Bloc de présentation -->
             <div class="relative mb-2 p-2 flex items-center overflow-hidden rounded-xl bg-[#0F0F2F]/80"
                  style="border: 4px solid; border-image: linear-gradient(to right, #0F0F2F, #0F4F8F, #0F0F2F) 1;">
                 <img :src="personalInfoReactive.profile_photo ? `/storage/${personalInfoReactive.profile_photo}` : '/images/Icons/dashboard.png'"
@@ -44,70 +43,109 @@ const personalInfoReactive = reactive({ ...props.personalInfo });
             </div>
 
             <!-- Grille : Formulaire + Carte -->
-            <div class="grid grid-cols-1 gap-6 px-3 mt-6 mb-6 md:grid-cols-2">
+            <div class="flex flex-col gap-6 px-3 mt-6 mb-6 md:flex-row">
 
-                <!-- Carte droite : aperçu -->
-                <div class="group block p-6 rounded-xl shadow-md bg-[#0F0F2F]/80 border border-[#0F0F2F]/50">
-                    <h3 class="text-xl font-semibold text-[#52c5ff] mb-4 text-center">Mes informations personnelles</h3>
-                    <div class="flex justify-center mb-4">
-                        <img :src="personalInfoReactive.profile_photo ? `/storage/${personalInfoReactive.profile_photo}` : '/images/default-avatar.png'"
-                             class="object-cover w-32 h-32 rounded-full" />
+                <!-- Carte droite : Aperçu 40% -->
+                <div class="flex-[0.4] group relative block p-4 rounded-xl shadow-md bg-[#0F0F2F]/80 border border-[#0F0F2F]/50">
+
+                    <!-- En-tête avec image et titre -->
+                    <div class="relative flex items-center mb-2" style="min-height: 160px; padding-left: 160px;">
+                        <img src="/images/Icons/infoperso.png" alt="Info perso"
+                             class="absolute object-contain h-35 w-35"
+                             style="top:0; left:0;" />
+                        <h3 class="text-xl font-semibold text-[#52c5ff]">
+                            Aperçu de mon Profil
+                        </h3>
                     </div>
 
-                    <div class="mb-2">
-                        <p class="text-sm text-[#52c5ff] font-semibold">Prénom :</p>
-                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.first_name || 'Non renseigné' }}</p>
+                    <!-- Séparateur -->
+                    <div class="w-full h-2 my-4 bg-gradient-to-r from-[#0F0F2F] via-[#0F4F8F] to-[#0F0F2F]"></div>
+
+                    <!-- Bloc Infos principales alignées -->
+                    <div class="grid grid-cols-[120px_1fr] gap-y-3 mt-4 text-base">
+                        <p class="text-[#52c5ff] font-semibold">Prénom :</p>
+                        <p class="text-[#E0E6F0]">{{ personalInfoReactive.first_name || 'Non renseigné' }}</p>
+
+                        <p class="text-[#52c5ff] font-semibold">Nom :</p>
+                        <p class="text-[#E0E6F0]">{{ personalInfoReactive.last_name || 'Non renseigné' }}</p>
+
+                        <p class="text-[#52c5ff] font-semibold">Surnom :</p>
+                        <p class="text-[#E0E6F0]">{{ personalInfoReactive.nickname || 'Non renseigné' }}</p>
+
+                        <p class="text-[#52c5ff] font-semibold">Téléphone :</p>
+                        <p class="text-[#E0E6F0]">{{ personalInfoReactive.phone || 'Non renseigné' }}</p>
+
+                        <p class="text-[#52c5ff] font-semibold">Localisation :</p>
+                        <p class="text-[#E0E6F0]">{{ personalInfoReactive.location || 'Non renseigné' }}</p>
+
+                        <p class="text-[#52c5ff] font-semibold">Métier :</p>
+                        <p class="text-[#E0E6F0]">{{ personalInfoReactive.job_title || 'Non renseigné' }}</p>
+
+                        <p class="text-[#52c5ff] font-semibold">Disponibilité :</p>
+                        <p class="text-[#E0E6F0]">{{ personalInfoReactive.availability || 'Non renseigné' }}</p>
                     </div>
-                    <div class="mb-2">
-                        <p class="text-sm text-[#52c5ff] font-semibold">Nom :</p>
-                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.last_name || 'Non renseigné' }}</p>
+
+                    <!-- Email -->
+                    <div class="grid grid-cols-[120px_1fr] gap-y-3 mt-4">
+                        <p class="text-[#52c5ff] font-semibold">Email :</p>
+                        <p class="text-[#E0E6F0]">{{ personalInfoReactive.email || 'Non renseigné' }}</p>
                     </div>
-                    <div class="mb-2">
-                        <p class="text-sm text-[#52c5ff] font-semibold">Surnom :</p>
-                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.nickname || 'Non renseigné' }}</p>
+
+                    <!-- Séparateur -->
+                    <div class="w-full h-2 my-4 bg-gradient-to-r from-[#0F0F2F] via-[#0F4F8F] to-[#0F0F2F]"></div>
+
+                    <!-- Bio -->
+                    <div class="grid grid-cols-[150px_1fr] gap-y-3 mb-3">
+                        <p class="text-[#52c5ff] font-semibold">Bio :</p>
+                        <div class="mt-1 col-span-full">
+                            <p class="text-[#E0E6F0]">{{ personalInfoReactive.bio || 'Non renseigné' }}</p>
+                        </div>
                     </div>
-                    <div class="mb-2">
-                        <p class="text-sm text-[#52c5ff] font-semibold">Email :</p>
-                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.email || 'Non renseigné' }}</p>
+
+                    <!-- Séparateur -->
+                    <div class="w-full h-2 my-4 bg-gradient-to-r from-[#0F0F2F] via-[#0F4F8F] to-[#0F0F2F]"></div>
+
+                    <!-- Réseaux sociaux -->
+                    <div class="grid grid-cols-[150px_1fr] gap-y-2 mb-3">
+                        <p class="text-[#52c5ff] font-semibold">Réseaux sociaux :</p>
+                        <div class="mt-1 col-span-full">
+                            <p><span class="text-[#f8786f] font-semibold">LinkedIn :</span> {{ personalInfoReactive.linkedin || 'Non renseigné' }}</p>
+                            <p><span class="text-[#f8786f] font-semibold">GitHub :</span> {{ personalInfoReactive.github || 'Non renseigné' }}</p>
+                            <p><span class="text-[#f8786f] font-semibold">Twitter :</span> {{ personalInfoReactive.twitter || 'Non renseigné' }}</p>
+                            <p><span class="text-[#f8786f] font-semibold">Facebook :</span> {{ personalInfoReactive.facebook || 'Non renseigné' }}</p>
+                            <p><span class="text-[#f8786f] font-semibold">YouTube :</span> {{ personalInfoReactive.youtube || 'Non renseigné' }}</p>
+                            <p><span class="text-[#f8786f] font-semibold">TikTok :</span> {{ personalInfoReactive.tiktok || 'Non renseigné' }}</p>
+                        </div>
                     </div>
-                    <div class="mb-2">
-                        <p class="text-sm text-[#52c5ff] font-semibold">Téléphone :</p>
-                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.phone || 'Non renseigné' }}</p>
+
+                    <!-- Séparateur -->
+                    <div class="w-full h-2 my-4 bg-gradient-to-r from-[#0F0F2F] via-[#0F4F8F] to-[#0F0F2F]"></div>
+
+                    <!-- Image Upload -->
+                    <div class="mb-3 grid grid-cols-[150px_1fr] gap-y-2">
+                        <p class="text-[#52c5ff] font-semibold">Votre image Upload :</p>
+                        <div>
+                            <img v-if="personalInfoReactive.profile_photo"
+                                 :src="`/storage/${personalInfoReactive.profile_photo}`"
+                                 alt="Image Profil"
+                                 class="object-cover w-32 h-32 mt-1 rounded-md" />
+                            <p v-else class="text-[#E0E6F0]">Aucune image</p>
+                        </div>
                     </div>
-                    <div class="mb-2">
-                        <p class="text-sm text-[#52c5ff] font-semibold">Localisation :</p>
-                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.location || 'Non renseigné' }}</p>
+
+                    <!-- Mon CV enregistré -->
+                    <div class="mb-3 grid grid-cols-[150px_1fr] gap-y-2">
+                        <p class="text-[#52c5ff] font-semibold">Mon CV enregistré :</p>
+                        <p class="text-[#E0E6F0]">{{ personalInfoReactive.cv_path || 'Aucun CV' }}</p>
                     </div>
-                    <div class="mb-2">
-                        <p class="text-sm text-[#52c5ff] font-semibold">Titre professionnel :</p>
-                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.job_title || 'Non renseigné' }}</p>
-                    </div>
-                    <div class="mb-2">
-                        <p class="text-sm text-[#52c5ff] font-semibold">Bio :</p>
-                        <p class="text-sm text-[#E0E6F0]">{{ personalInfoReactive.bio || 'Non renseigné' }}</p>
-                    </div>
-                    <div class="mb-2" v-if="personalInfoReactive.cv">
-                        <p class="text-sm text-[#52c5ff] font-semibold">CV :</p>
-                        <a :href="`/storage/${personalInfoReactive.cv}`" target="_blank" class="text-sm text-[#E0E6F0] underline">Voir CV</a>
-                    </div>
-                    <div>
-                        <p class="text-sm text-[#52c5ff] font-semibold">Réseaux sociaux :</p>
-                        <p class="text-sm text-[#E0E6F0]">
-                            LinkedIn : {{ personalInfoReactive.linkedin || 'Non renseigné' }}<br>
-                            GitHub : {{ personalInfoReactive.github || 'Non renseigné' }}<br>
-                            Twitter : {{ personalInfoReactive.twitter || 'Non renseigné' }}<br>
-                            Facebook : {{ personalInfoReactive.facebook || 'Non renseigné' }}<br>
-                            YouTube : {{ personalInfoReactive.youtube || 'Non renseigné' }}<br>
-                            TikTok : {{ personalInfoReactive.tiktok || 'Non renseigné' }}<br>
-                            Disponibilité : {{ personalInfoReactive.availability || 'Non renseigné' }}
-                        </p>
-                    </div>
+
                 </div>
 
-                <!-- Carte gauche : Formulaire -->
-                <div>
+                <!-- Carte gauche : Formulaire 60% -->
+                <div class="flex-[0.6]">
                     <Form :personalInfo="personalInfoReactive" :submitUrl="route('admin.personal-info.update')" method="put" />
                 </div>
+
             </div>
 
         </div>

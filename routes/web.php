@@ -117,6 +117,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Personal Info
         Route::get('personal-info', [BackPersonalInfoController::class, 'edit'])->name('personal-info.edit');
         Route::put('personal-info', [BackPersonalInfoController::class, 'update'])->name('personal-info.update');
+
+        // ✅ Nouvelle route POST pour upload
+        Route::post('personal-info/update', [BackPersonalInfoController::class, 'update'])->name('personal-info.update.post');
     });
 
     // Profil utilisateur
